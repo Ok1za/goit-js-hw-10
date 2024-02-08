@@ -4,13 +4,12 @@ import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 
 const inputPicker = document.querySelector('#datetime-picker');
-const buttonStart = document.querySelector('[data-start]');
-const daysTimer = document.querySelector('[data-days]');
-const hoursTimer = document.querySelector('[data-hours]');
-const minutesTimer = document.querySelector('[data-minutes]');
-const secondsTimer = document.querySelector('[data-seconds]');
+const startButton = document.querySelector('[data-start]');
+const daysElement = document.querySelector('[data-days]');
+const hoursElement = document.querySelector('[data-hours]');
+const minutesElement = document.querySelector('[data-minutes]');
+const secondsElement = document.querySelector('[data-seconds]');
 
-buttonStart.disabled = true;
 let userSelectedDate = null;
 
 const options = {
@@ -20,27 +19,22 @@ const options = {
     minuteIncrement: 1,
     onClose(selectedDates) {
         userSelectedDate = selectedDates[0].getTime();
-        buttonStart.disabled = false;
 
-    if (userSelectedDate < Date.now()) {
-        buttonStart.disabled = true;
-        iziToast.error({
-            messageColor: '#FFF',
-            color: '#EF4040',
-            iconUrl: closeIcon,
-            position: 'topRight',
-            message: 'Please choose a date in the future',
-        });
-    }
+    if (userSelectedDate >= Date.now()) {
+            startButton.disabled = false;
+        } else {
+            startButton.disabled = true;
+            window.alert("Please choose a date in the future");
+        }
     },
 };
 
 flatpickr(inputPicker, options);
 
-buttonStart.addEventListener('click', onClickStart);
+startButton.addEventListener('click', onClickStart);
 
 function onClickStart() {
-    buttonStart.disabled = true;
+    startButton.disabled = true;
     const intervalId = setInterval(() => {
         let timeToLeft = userSelectedDate - Date.now();
         inputPicker.disabled = true;
@@ -56,10 +50,10 @@ function onClickStart() {
     }
 
     const { days, hours, minutes, seconds } = convertMs(timeToLeft);
-    daysTimer.textContent = `${addLeadingZero(days)}`;
-    hoursTimer.textContent = `${addLeadingZero(hours)}`;
-    minutesTimer.textContent = `${addLeadingZero(minutes)}`;
-    secondsTimer.textContent = `${addLeadingZero(seconds)}`;
+    daysElement.textContent = `${addLeadingZero(days)}`;
+    hoursElement.textContent = `${addLeadingZero(hours)}`;
+    minutesElement.textContent = `${addLeadingZero(minutes)}`;
+    secondsElement.textContent = `${addLeadingZero(seconds)}`;
     }, 1000);
 }
 
